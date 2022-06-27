@@ -30,6 +30,3 @@ Shots of Autonomus Car Body
 
 
 
-
-https://user-images.githubusercontent.com/63786276/176043850-c6a4a454-7efa-4c22-8c13-9a1d63e64c0e.mp4
-
