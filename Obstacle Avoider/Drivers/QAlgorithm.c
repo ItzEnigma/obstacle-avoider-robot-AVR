@@ -15,9 +15,8 @@
 #include "QAlgorithm_Driver.h"
 #include <util/delay.h>
 
-int episodes = 100, currentState = 0, nextState = 0, actionID = 0;
+int episodes = 200, currentState = 0, nextState = 0, actionID = 0;
 float reward;
-bool action_taken = false;
 float epsilon = 1.0;
 float new_Q, Old_Q, max_Q;
 
@@ -70,7 +69,7 @@ struct max_val getMax(int next_s){
 	return x;
 }
 
-int getState()
+int getState() // read the three ultrasonics 
 {
 	int R = ReadUS(_ULTRASONIC_RIGHT_TRIGGER);
 	_delay_ms(1);
@@ -78,7 +77,7 @@ int getState()
 	_delay_ms(1);
 	int M = ReadUS(_ULTRASONIC_MIDDLE_TRIGGER);
 
-	if ((L>15) && (M>20) && (R>15))
+	if ((L>15) && (M>20) && (R>15)) //000
 		return 0;
 	else if ((L>15) && (M>20) && (R<=15))
 		return 1;
@@ -92,7 +91,7 @@ int getState()
 		return 5;
 	else if ((L<=15) && (M<=20) && (R>15))
 		return 6;
-	else if ((L<=15) && (M<=20) && (R<=15))
+	else if ((L<=15) && (M<=20) && (R<=15)) //111
 		return 7;
 	else 
 		return -1;
@@ -103,15 +102,13 @@ void update2(int state, int next_s, int action, int state_reward){
 	max_Q = getMax(next_s)._max;
 	new_Q = ((1.0f - ALPHA)*Old_Q + ALPHA*(state_reward + GAMMA*max_Q));
 	Q2[state][action] = new_Q;
-	// printf("%f\t%f\t%f\n",Old_Q, max_Q, new_Q);
 }
 
 void train2(){
 	int ultra;
 	DDRB |= 1 << 4;
 	PORTB |= 1 << 4;
-	for (int i = 0; i < 200; i++) {
-		action_taken = false;
+	for (int i = 0; i < episodes; i++) {
 		ultra = 1000;
 		while(1)
 		{
@@ -140,65 +137,62 @@ void train2(){
 	PORTB &= ~(1<<4); //close the LED
 }
 
-void train3(){
-	int F,L,R;
+void train3(){ //interacting with the actual environment given to the robot
+	
 	DDRB |= 1 << 4;
-	PORTB |= 1 << 4;
-	for (int i = 0; i < 200; i++) {
-		action_taken = false;
-		while(1)
-		{
-			Forward();
-			F = ReadUS(_ULTRASONIC_MIDDLE_TRIGGER);
-			L = ReadUS(_ULTRASONIC_LEFT_TRIGGER);
-			R = ReadUS(_ULTRASONIC_RIGHT_TRIGGER);
-			if( F <= 20 || L<=15 || R<=15)
-			{
-				Stop();
-				nextState = getState();
-				break;
-			}
-		}
-
-		float prob = Q_random();
-		if(prob <= epsilon){
+	PORTB |= 1 << 4; //enable the blue LED (training phase)
+	
+	for (int i = 0; i < episodes; i++) {
+		Forward();// make the robot move forward for each episode
+		do{
+			currentState = getState(); // read the current state
+		} while (currentState == 0); //move till an obstacle is detected
+		
+		float prob = Q_random(); //getting a probability for the explore/exploit action
+		
+		if(prob <= epsilon) //explore
 			actionID = rand() % ACTIONS;
-		}
-		else
-		actionID = getMax(currentState)._max_ind;
-		switch (actionID)
+		else //exploit
+			actionID = getMax(currentState)._max_ind;
+		
+		switch (actionID) //take the action
 		{
 			case 0 : Forward(); break;
 			case 1 : Left(); break;
 			case 2 : Right(); break;
 			case 3 : Rotate(); break;
 		}
-		_delay_ms(1000);
-		nextState = getState();
-		reward = rewards2[currentState][actionID];
-		update2(currentState, nextState, actionID, reward);
-		epsilon = decay(epsilon);
-		_delay_ms(100);
+		
+		nextState = getState(); // reading the new state
+		_delay_ms(200); //delay to make sure the action is taken successfully
+		Stop();//stop the robot
+		reward = rewards2[currentState][actionID]; //getting the reward
+		update2(currentState, nextState, actionID, reward); //updating q table
+		epsilon = decay(epsilon); // decay the epsilon (more toward exploiting)
+		_delay_ms(500);
 	}
-	PORTB &= ~(1<<4);
+	PORTB &= ~(1<<4); //close the blue LED
+	DDRB |= 1 << 5;	  // enable the GREEN LED
+	PORTB |= 1 << 5;  // enable the GREEN LED
 }
 
 
 void test2()
 	{
-		while(true)
+		while(1)
 		{
+			//while(getState() == 0) Forward(); can be used with train 3
+			
 			actionID = getMax(getState())._max_ind;
+			
 			if(actionID == 0){ //forward
 				Forward(); 
 			}
 			else if(actionID == 1){ // left
 				Left(); 
-				//_delay_ms(1000);
 			}
 			else if(actionID == 2){ // right
 				Right();
-				//_delay_ms(3000);
 			}
 			else if(actionID == 3) // rotate
 			{

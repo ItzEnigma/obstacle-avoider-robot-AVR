@@ -16,14 +16,13 @@
 
 #include <avr/io.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 
 				// ----- QLearning Definitions ----- //
-#define ACTIONS 4
-#define STATES2 8
-#define ALPHA 0.1f
-#define GAMMA 0.5f
+#define ACTIONS 4 // forward, left, right, rotate
+#define STATES2 8 // the readings of the three ultrasonics 000 (no obstacles) to 111 (obstacles in each ultrasonic)
+#define ALPHA 0.1f // the learning rate
+#define GAMMA 0.5f // discount factor
 
 
 

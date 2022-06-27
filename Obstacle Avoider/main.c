@@ -24,7 +24,7 @@ int main(void)
 {
 	Ultrasonic_init();	// initialize the ultrasonics
 	train2();			// train the robot
-	DDRB |= 1 << 5;
+	DDRB |= 1 << 5;     //starting the green LED
 	PORTB |= 1 << 5;
 	test2();			// infinite loop anyway
 	_delay_ms(1000);
