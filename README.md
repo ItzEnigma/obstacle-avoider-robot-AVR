@@ -26,7 +26,7 @@ Autonomus Car Proteus Simulation
 ![](https://user-images.githubusercontent.com/63786276/176042886-0a8cd29e-6e4e-4e7f-8c9b-738d2973eb0d.jpg)
 ![](https://user-images.githubusercontent.com/63786276/176043049-1abb6f24-1331-4979-9f46-ee0996002319.jpg)
 ![](https://user-images.githubusercontent.com/63786276/176043239-3d6208fb-1df3-47c6-bf65-2a2ed900639d.jpg)
-Shots of Autonomus Car Body
+Shots Of Autonomus Car Body
 
 
 
