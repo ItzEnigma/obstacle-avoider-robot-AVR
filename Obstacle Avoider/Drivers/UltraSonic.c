@@ -34,7 +34,7 @@ u64 ReadUS(u08 x)
 {
 	u64 count = 0;					// Time Counts Variable
 	u64 distance = 0;				// Distance Between Ultrasonic & Obstacle
-	
+	//choose which Us who will receive  the trigger   
 	if(x == 0){
 		PORTC |= (1<<0); //trigger pin 0 port c for 10 us for LUS
 		_delay_us(10);
@@ -50,13 +50,14 @@ u64 ReadUS(u08 x)
 		_delay_us(10);
 		PORTC &= ~(1<<2);
 	}
+	//wait till the one of ECHO arrived
 	while((PINB & (1<<x)) >> x == 0);
+	//calculate the ECHO time
 	while((PINB & (1<<x)) >>x == 1){
 		// Converting The Counts To Microseconds Variable
 		_delay_us(1);
 		count++;
 	}
-	// distance = (count*0.034)/(2);
 	distance = count/9;					// Distance Equation.
 	return distance;
 }

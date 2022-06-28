@@ -2,7 +2,7 @@
  * Motors_Driver.c
  *
  * Created: 6/17/2022 1:03:31 PM
- *  Author: hosam
+ *  Author: John/hosam
  */ 
 
 // CPU Clock Speed
