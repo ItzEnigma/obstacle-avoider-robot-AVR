@@ -16,7 +16,7 @@ Implemented using ATmega328P Microcontroller and QLearning Reinforcement Algorit
 ## Attachments 
 
 
-[![AutoCar Video](https://drive.google.com/file/d/1IKK0cR5SuKv8Kd9YC_XTM_23w_wf43FM/view)](https://drive.google.com/file/d/1IKK0cR5SuKv8Kd9YC_XTM_23w_wf43FM/view "AutoCar Video")
+https://user-images.githubusercontent.com/89663721/199961369-f46f69dd-4453-49f4-b65c-a66053d30bc0.mp4
 
 
 
